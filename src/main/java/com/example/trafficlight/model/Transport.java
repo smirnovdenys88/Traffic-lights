@@ -5,8 +5,9 @@ import com.example.trafficlight.enums.Status;
 import com.example.trafficlight.enums.TransportName;
 import com.example.trafficlight.utils.Channel;
 
-import javax.persistence.*;
-import java.util.concurrent.Callable;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "transport")

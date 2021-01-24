@@ -4,9 +4,7 @@ import com.example.trafficlight.component.RoadState;
 import com.example.trafficlight.enums.Road;
 import com.example.trafficlight.model.Transport;
 import com.example.trafficlight.service.TransportService;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -57,22 +55,6 @@ public class RoadListener {
 //        LOGGER.log(Level.INFO, "Transport: " + transport + " was removed to the Road_B");
     }
 
-    public synchronized void runTransportCrossStreetA() {
-        Optional<Transport> transport = transportSetA.stream().findFirst();
-        if (transport.isPresent()) {
-            transport.get().runTransportCrossStreet();
-            removeTransportA(transport.get());
-        }
-    }
-
-    public synchronized void runTransportCrossStreetB() {
-        Optional<Transport> transport = transportSetB.stream().findFirst();
-        if (transport.isPresent()) {
-            transport.get().runTransportCrossStreet();
-            removeTransportA(transport.get());
-        }
-    }
-
     public void runTransportCrossStreet() {
         atomicBoolean.set(true);
         Road road = roadState.getRoad();
@@ -93,16 +75,16 @@ public class RoadListener {
                 channels = new ConcurrentSkipListSet<>();
         }
         for (Transport channel : channels) {
-            if (roadState.getRoad().name() != road.name()){
+            if (roadState.getRoad().name() != road.name()) {
                 System.out.println(ANSI_YELLOW + "****************************************************************************");
                 System.out.println("Light road was changed......");
                 System.out.println("****************************************************************************" + ANSI_RESET);
                 break;
             }
             channel.runTransportCrossStreet();
-            if(roadState.getRoad() == Road.ROAD_A){
+            if (roadState.getRoad() == Road.ROAD_A) {
                 removeTransportA(channel);
-            }else {
+            } else {
                 removeTransportB(channel);
             }
             transportService.update(channel);
