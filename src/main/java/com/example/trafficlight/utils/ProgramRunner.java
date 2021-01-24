@@ -31,7 +31,7 @@ public class ProgramRunner {
         new Thread(new RunLightRoad(ROAD_LISTENER)).start();
     }
 
-    private static void generateTransport() throws InterruptedException {
+    private void generateTransport() throws InterruptedException {
         Random random = new Random();
         while (true) {
 
