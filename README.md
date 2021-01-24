@@ -14,8 +14,11 @@
 Uses next technologies:
 - Java
 - Spring boot 2.4.2
-- Gradle
+- Gradle 6.7
+- JPA
 - DB postgres 
+
+For run project needs to have installed Java or JRE, Gradle also DB postgres
 
 Running from command line:
 - gradle bootRun 
