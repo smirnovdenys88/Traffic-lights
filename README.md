@@ -16,3 +16,6 @@ Uses next technologies:
 - Spring boot 2.4.2
 - Gradle
 - DB postgres 
+
+Running from command line:
+- gradle bootRun 
