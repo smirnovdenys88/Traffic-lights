@@ -21,9 +21,6 @@ public class Transport implements Comparable<Transport>, Channel {
     private Status status;
     private int timeCrossRoad;
 
-    public static final String ANSI_RESET = "\u001B[0m";
-    public static final String ANSI_CYAN = "\u001B[36m";
-
     public Transport() {
         //For serialization
     }
@@ -36,12 +33,8 @@ public class Transport implements Comparable<Transport>, Channel {
     @Override
     public void runTransportCrossStreet() {
         try {
-            System.out.printf(ANSI_RESET + "Started Road: %s  Car: %s\n", this.road, this.id + ANSI_RESET);
-
             Thread.sleep(timeCrossRoad);
             this.status = Status.PASS;
-
-            System.out.printf(ANSI_RESET + "Finished Road: %s  Car: %s\n", this.road, this.id + ANSI_RESET);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }

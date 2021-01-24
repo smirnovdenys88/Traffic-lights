@@ -8,12 +8,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class RunLightRoad implements Runnable {
-    private static final int TIMEOUT_SLEEP_TRAFFIC_LIGHT = 20;
     private RoadListener roadListener;
     private final RoadState roadState = RoadState.getInstance();
-
-    public static final String ANSI_PURPLE = "\u001B[35m";
-    public static final String ANSI_RESET = "\u001B[0m";
 
     public RunLightRoad(RoadListener ROAD_LISTENER) {
         this.roadListener = ROAD_LISTENER;
@@ -23,10 +19,6 @@ public class RunLightRoad implements Runnable {
     public void run() {
         ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
         service.scheduleWithFixedDelay(() -> {
-            System.out.println(ANSI_PURPLE + "****************************************************************************");
-            System.out.println("Road :" + roadState.getRoad().name() + " run");
-            System.out.println("****************************************************************************" + ANSI_RESET);
-
             if (roadState.getRoad() != null && roadState.getRoad() == Road.ROAD_A) {
                 roadListener.runTransportCrossStreet();
                 roadState.setRoad(Road.ROAD_B);
@@ -34,6 +26,6 @@ public class RunLightRoad implements Runnable {
                 roadListener.runTransportCrossStreet();
                 roadState.setRoad(Road.ROAD_A);
             }
-        }, 0, TIMEOUT_SLEEP_TRAFFIC_LIGHT, TimeUnit.SECONDS);
+        }, 0, Constants.TIMEOUT_SLEEP_TRAFFIC_LIGHT, TimeUnit.SECONDS);
     }
 }

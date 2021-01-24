@@ -15,7 +15,6 @@ public class HomeController {
     private TransportService transportService;
     private final RoadState roadState = RoadState.getInstance();
 
-
     @GetMapping("/statistics")
     @ResponseBody
     public String getStatics() {
