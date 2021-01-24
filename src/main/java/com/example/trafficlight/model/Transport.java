@@ -13,7 +13,7 @@ import java.util.concurrent.Callable;
 public class Transport implements Comparable<Transport>, Channel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private TransportName name;
     private Road road;

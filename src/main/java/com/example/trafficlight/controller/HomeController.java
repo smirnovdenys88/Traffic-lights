@@ -1,21 +1,23 @@
 package com.example.trafficlight.controller;
 
+import com.example.trafficlight.component.RoadState;
 import com.example.trafficlight.model.Transport;
 import com.example.trafficlight.service.TransportService;
+import net.bytebuddy.asm.Advice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/home")
 public class HomeController {
 
     @Autowired
     private TransportService transportService;
+    private final RoadState roadState = RoadState.getInstance();
+
 
     @GetMapping("/statistics")
     @ResponseBody
@@ -39,6 +41,12 @@ public class HomeController {
                 stringBuilder.append("<td>" + transport.getTimeCrossRoad() + "</td>");
             stringBuilder.append("</tr>");
         }
+        stringBuilder.append("</table>");
+
+        stringBuilder.append("<table>");
+            stringBuilder.append("<tr>");
+                stringBuilder.append("<td color='green'>" + roadState.getRoad() + " Green</td>");
+            stringBuilder.append("/<tr>");
         stringBuilder.append("</table>");
 
         return stringBuilder.toString();

@@ -15,8 +15,8 @@ import java.util.logging.Logger;
 @Component
 public class ProgramRunner {
     private static final Logger LOGGER = Logger.getLogger(ProgramRunner.class.getName());
-    private static final int TIMEOUT_GENERATOR = 9000;
-    private static final int TIMEOUT_SLEEP = 2000;
+    private static final int TIMEOUT_GENERATOR = 4000;
+    private static final int TIMEOUT_SLEEP = 5000;
 
     private static AtomicLong count = new AtomicLong(100);
     private static RoadListener ROAD_LISTENER;
@@ -31,11 +31,11 @@ public class ProgramRunner {
     }
 
     private void runProgram() {
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            Thread.sleep(3000);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
 
         new Thread(() -> generateTransport()).start();
         new Thread(new RunLightRoad(ROAD_LISTENER)).start();

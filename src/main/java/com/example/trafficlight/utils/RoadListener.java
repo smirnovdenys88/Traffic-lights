@@ -9,16 +9,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Logger;
 
 public class RoadListener {
+    private static final Logger LOGGER = Logger.getLogger(RoadListener.class.getName());
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_RED = "\u001B[31m";
     public static final String ANSI_GREEN = "\u001B[32m";
     public static final String ANSI_YELLOW = "\u001B[33m";
     public static final String ANSI_BLUE = "\u001B[34m";
 
-    private static final Logger LOGGER = Logger.getLogger(RoadListener.class.getName());
+    private AtomicBoolean atomicBoolean = new AtomicBoolean(false);
     private final RoadState roadState = RoadState.getInstance();
     private Set<Transport> transportSetA = new ConcurrentSkipListSet<>();
     private Set<Transport> transportSetB = new ConcurrentSkipListSet<>();
@@ -33,12 +35,14 @@ public class RoadListener {
         this.transportSetA.add(transport);
         System.out.println(ANSI_GREEN + "Transport: " + transport + " was added to the Road_A" + ANSI_RESET);
 //        LOGGER.log(Level.INFO, "Transport: " + transport + " was added to the Road_A");
+        if (!atomicBoolean.get()) runTransportCrossStreet();
     }
 
     public void addTransportToRoadB(Transport transport) {
         this.transportSetB.add(transport);
         System.out.println(ANSI_GREEN + "Transport: " + transport + " was added to the Road_B" + ANSI_RESET);
 //        LOGGER.log(Level.INFO, "Transport: " + transport + " was added to the Road_B");
+        if (!atomicBoolean.get()) runTransportCrossStreet();
     }
 
     public void removeTransportA(Transport transport) {
@@ -70,6 +74,7 @@ public class RoadListener {
     }
 
     public void runTransportCrossStreet() {
+        atomicBoolean.set(true);
         Road road = roadState.getRoad();
         Set<Transport> channels;
 
@@ -102,5 +107,6 @@ public class RoadListener {
             }
             transportService.update(channel);
         }
+        atomicBoolean.set(false);
     }
 }
