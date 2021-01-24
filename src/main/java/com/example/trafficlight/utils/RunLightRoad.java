@@ -8,7 +8,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class RunLightRoad implements Runnable {
-    private static final int TIMEOUT_SLEEP_TRAFFIC_LIGHT = 10;
+    private static final int TIMEOUT_SLEEP_TRAFFIC_LIGHT = 20;
     private RoadListener roadListener;
     private final RoadState roadState = RoadState.getInstance();
 
