@@ -3,9 +3,12 @@ package com.example.trafficlight.utils;
 import com.example.trafficlight.enums.Road;
 import com.example.trafficlight.enums.TransportName;
 import com.example.trafficlight.model.Transport;
+import com.example.trafficlight.service.TransportService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Random;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Logger;
 
@@ -19,19 +22,27 @@ public class ProgramRunner {
     private static final RoadListener ROAD_LISTENER = new RoadListener();
     private static Road road = Road.ROAD_A;
 
-    public ProgramRunner() {
-        new Thread(() -> {
-            try {
-                generateTransport();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }).start();
+    @Autowired
+    private TransportService transportService;
 
+    public ProgramRunner() {
+        CompletableFuture.runAsync(this::runProgram);
+
+    }
+
+    private void runProgram(){
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        new Thread(()-> generateTransport()).start();
         new Thread(new RunLightRoad(ROAD_LISTENER)).start();
     }
 
-    private void generateTransport() throws InterruptedException {
+    private void generateTransport() {
+
         Random random = new Random();
         while (true) {
 
@@ -44,12 +55,17 @@ public class ProgramRunner {
                     .timeCrossRoad(time)
                     .build();
 
+            transportService.add(transport);
             if (Road.ROAD_A == transport.getRoad()) {
                 ROAD_LISTENER.addTransportToRoadA(transport);
             } else {
                 ROAD_LISTENER.addTransportToRoadB(transport);
             }
-            Thread.sleep(TIMEOUT_SLEEP);
+            try {
+                Thread.sleep(TIMEOUT_SLEEP);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

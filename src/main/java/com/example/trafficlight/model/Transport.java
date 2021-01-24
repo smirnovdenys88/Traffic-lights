@@ -23,7 +23,11 @@ public class Transport implements Comparable<Transport>, Channel, Callable<Trans
         public static final String ANSI_RESET = "\u001B[0m";
         public static final String ANSI_CYAN = "\u001B[36m";
 
-        @Override
+    public Transport() {
+        //For serialization
+    }
+
+    @Override
         public int compareTo(Transport o) {
             return this.id.compareTo(o.id);
         }
