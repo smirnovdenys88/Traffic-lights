@@ -15,29 +15,29 @@ import java.util.logging.Logger;
 @Component
 public class ProgramRunner {
     private static final Logger LOGGER = Logger.getLogger(ProgramRunner.class.getName());
-    private static final int TIMEOUT_GENERATOR = 4000;
+    private static final int TIMEOUT_GENERATOR = 9000;
     private static final int TIMEOUT_SLEEP = 2000;
 
     private static AtomicLong count = new AtomicLong(100);
-    private static final RoadListener ROAD_LISTENER = new RoadListener();
-    private static Road road = Road.ROAD_A;
+    private static RoadListener ROAD_LISTENER;
 
     @Autowired
     private TransportService transportService;
 
-    public ProgramRunner() {
+    public ProgramRunner(TransportService transportService) {
+        this.transportService = transportService;
         CompletableFuture.runAsync(this::runProgram);
-
+        ROAD_LISTENER = new RoadListener(transportService);
     }
 
-    private void runProgram(){
+    private void runProgram() {
         try {
             Thread.sleep(3000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
-        new Thread(()-> generateTransport()).start();
+        new Thread(() -> generateTransport()).start();
         new Thread(new RunLightRoad(ROAD_LISTENER)).start();
     }
 

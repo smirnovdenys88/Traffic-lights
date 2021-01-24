@@ -2,6 +2,9 @@ package com.example.trafficlight.utils;
 
 import com.example.trafficlight.component.RoadState;
 import com.example.trafficlight.enums.Road;
+import com.example.trafficlight.model.Transport;
+import com.example.trafficlight.service.TransportService;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Optional;
 import java.util.Set;
@@ -17,35 +20,41 @@ public class RoadListener {
 
     private static final Logger LOGGER = Logger.getLogger(RoadListener.class.getName());
     private final RoadState roadState = RoadState.getInstance();
-    private Set<Channel> transportSetA = new ConcurrentSkipListSet<>();
-    private Set<Channel> transportSetB = new ConcurrentSkipListSet<>();
+    private Set<Transport> transportSetA = new ConcurrentSkipListSet<>();
+    private Set<Transport> transportSetB = new ConcurrentSkipListSet<>();
 
-    public void addTransportToRoadA(Channel transport) {
+    private TransportService transportService;
+
+    public RoadListener(TransportService transportService) {
+        this.transportService = transportService;
+    }
+
+    public void addTransportToRoadA(Transport transport) {
         this.transportSetA.add(transport);
         System.out.println(ANSI_GREEN + "Transport: " + transport + " was added to the Road_A" + ANSI_RESET);
 //        LOGGER.log(Level.INFO, "Transport: " + transport + " was added to the Road_A");
     }
 
-    public void addTransportToRoadB(Channel transport) {
+    public void addTransportToRoadB(Transport transport) {
         this.transportSetB.add(transport);
         System.out.println(ANSI_GREEN + "Transport: " + transport + " was added to the Road_B" + ANSI_RESET);
 //        LOGGER.log(Level.INFO, "Transport: " + transport + " was added to the Road_B");
     }
 
-    public void removeTransportA(Channel transport) {
+    public void removeTransportA(Transport transport) {
         this.transportSetA.remove(transport);
         System.out.println(ANSI_RED + "Transport: " + transport + " was removed to the Road_A" + ANSI_RESET);
 //        LOGGER.log(Level.INFO, "Transport: " + transport + " was removed to the Road_A");
     }
 
-    public void removeTransportB(Channel transport) {
+    public void removeTransportB(Transport transport) {
         this.transportSetB.remove(transport);
         System.out.println(ANSI_RED + "Transport: " + transport + " was removed to the Road_B" + ANSI_RESET);
 //        LOGGER.log(Level.INFO, "Transport: " + transport + " was removed to the Road_B");
     }
 
     public synchronized void runTransportCrossStreetA() {
-        Optional<Channel> transport = transportSetA.stream().findFirst();
+        Optional<Transport> transport = transportSetA.stream().findFirst();
         if (transport.isPresent()) {
             transport.get().runTransportCrossStreet();
             removeTransportA(transport.get());
@@ -53,7 +62,7 @@ public class RoadListener {
     }
 
     public synchronized void runTransportCrossStreetB() {
-        Optional<Channel> transport = transportSetB.stream().findFirst();
+        Optional<Transport> transport = transportSetB.stream().findFirst();
         if (transport.isPresent()) {
             transport.get().runTransportCrossStreet();
             removeTransportA(transport.get());
@@ -62,7 +71,7 @@ public class RoadListener {
 
     public void runTransportCrossStreet() {
         Road road = roadState.getRoad();
-        Set<Channel> channels;
+        Set<Transport> channels;
 
         System.out.println(ANSI_BLUE + "--------------------------------------------------------");
         System.out.println("Road: " + road.name() + "transportSetA: " + transportSetA.size() + " transportSetB: " + transportSetB.size());
@@ -78,7 +87,7 @@ public class RoadListener {
             default:
                 channels = new ConcurrentSkipListSet<>();
         }
-        for (Channel channel : channels) {
+        for (Transport channel : channels) {
             if (roadState.getRoad().name() != road.name()){
                 System.out.println(ANSI_YELLOW + "****************************************************************************");
                 System.out.println("Light road was changed......");
@@ -91,6 +100,7 @@ public class RoadListener {
             }else {
                 removeTransportB(channel);
             }
+            transportService.update(channel);
         }
     }
 }
