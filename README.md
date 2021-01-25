@@ -22,3 +22,5 @@ For run project needs to have installed Java or JRE, Gradle also DB postgres
 
 Running from command line:
 - gradle bootRun 
+
+Look at the result: http://localhost:8080/home/statistics
